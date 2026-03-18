@@ -237,4 +237,4 @@ rag_app/
 
 ## License
 
-UNLICENSED
+This project is licensed under the [MIT License](LICENSE).
