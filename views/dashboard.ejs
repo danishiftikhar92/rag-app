@@ -1,0 +1,127 @@
+<%- include('partials/header') %>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon blue">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value"><%= stats.totalCollections %></span>
+      <span class="stat-label">Collections</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 10l5 5 5-5"/></svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value"><%= stats.totalChunks %></span>
+      <span class="stat-label">Total Chunks</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value"><%= Object.keys(stats.bySourceType).length %></span>
+      <span class="stat-label">Source Types</span>
+    </div>
+  </div>
+</div>
+
+<% if (Object.keys(stats.bySourceType).length > 0) { %>
+<div class="card">
+  <h3 class="card-title">Chunks by Source Type</h3>
+  <div class="type-badges">
+    <% Object.entries(stats.bySourceType).forEach(([type, count]) => { %>
+      <div class="type-badge">
+        <span class="badge-type"><%= type %></span>
+        <span class="badge-count"><%= count %></span>
+      </div>
+    <% }); %>
+  </div>
+</div>
+<% } %>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Knowledge Base Sources</h3>
+    <button class="btn btn-danger btn-sm" onclick="clearKnowledgeBase()">Clear All</button>
+  </div>
+  <% if (sources.length === 0) { %>
+    <div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <p>No sources ingested yet. Upload files, add a website, or start chatting!</p>
+    </div>
+  <% } else { %>
+    <div class="sources-table-wrap">
+      <table class="sources-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Chunks</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% sources.forEach(source => { %>
+            <tr>
+              <td class="source-name"><%= source.name %></td>
+              <td><span class="source-type-pill <%= source.source_type %>"><%= source.source_type %></span></td>
+              <td><%= source.chunk_count %></td>
+              <td><%= new Date(source.created_at).toLocaleDateString() %></td>
+              <td>
+                <button class="btn btn-danger btn-sm btn-delete-source" data-id="<%= source.collection_id %>" data-name="<%= source.name %>" data-chunks="<%= source.chunk_count %>">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                  Delete
+                </button>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="delete-modal" style="display: none;">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h3 class="modal-title">Delete Source</h3>
+    <p class="modal-text">
+      Are you sure you want to delete <strong id="delete-source-name"></strong>?<br>
+      This will permanently remove <strong id="delete-chunk-count"></strong> chunk(s) from the knowledge base.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="delete-cancel">Cancel</button>
+      <button class="btn btn-danger" id="delete-confirm-first">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Second Confirmation Modal -->
+<div class="modal-overlay" id="delete-modal-final" style="display: none;">
+  <div class="modal">
+    <div class="modal-icon danger">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <h3 class="modal-title">This cannot be undone</h3>
+    <p class="modal-text">
+      All embeddings and data for <strong id="delete-source-name-final"></strong> will be permanently deleted.<br>
+      Type <strong class="confirm-keyword">DELETE</strong> below to confirm.
+    </p>
+    <input type="text" id="delete-confirm-input" class="form-input" placeholder="Type DELETE to confirm" autocomplete="off">
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="delete-cancel-final">Go Back</button>
+      <button class="btn btn-danger" id="delete-confirm-final" disabled>Permanently Delete</button>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

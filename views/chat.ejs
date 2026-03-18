@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+<div class="chat-container">
+  <div class="chat-messages" id="chat-messages">
+    <div class="chat-welcome">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <h3>Ask anything about your knowledge base</h3>
+      <p>Your questions will be answered using the ingested documents, websites, audio, and video content.</p>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <form id="chat-form">
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask a question..." class="chat-input" autocomplete="off" required>
+        <button type="submit" class="btn btn-primary chat-send" id="send-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

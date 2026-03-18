@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<div class="card">
+  <h3 class="card-title">Ingest Website</h3>
+  <p class="card-subtitle">Enter a URL to scrape and add its content to the knowledge base.</p>
+
+  <form id="url-form">
+    <div class="form-group">
+      <label for="url">Website URL</label>
+      <input type="url" id="url" name="url" placeholder="https://example.com/article" class="form-input" required>
+    </div>
+
+    <div class="form-group">
+      <label for="urlCollectionName">Collection Name <span class="optional">(optional)</span></label>
+      <input type="text" id="urlCollectionName" name="collectionName" placeholder="e.g. docs-site" class="form-input">
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" id="url-btn">
+      <span class="btn-text">Scrape &amp; Ingest</span>
+      <span class="btn-loader" style="display: none;">
+        <span class="spinner"></span> Scraping...
+      </span>
+    </button>
+  </form>
+
+  <div id="url-result" class="result-box" style="display: none;"></div>
+</div>
+
+<%- include('partials/footer') %>

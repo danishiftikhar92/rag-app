@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+
+<div class="card">
+  <h3 class="card-title">Upload Documents &amp; Media</h3>
+  <p class="card-subtitle">Drag &amp; drop files or click to browse. Supports PDF, TXT, MD, audio, and video files.</p>
+
+  <form id="upload-form" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="collectionName">Collection Name <span class="optional">(optional)</span></label>
+      <input type="text" id="collectionName" name="collectionName" placeholder="e.g. my-research-papers" class="form-input">
+    </div>
+
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="file-input" name="files" multiple accept=".pdf,.txt,.md,.mp3,.wav,.ogg,.flac,.mp4,.webm,.avi,.mkv" hidden>
+      <div class="dropzone-content">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <p class="dropzone-text">Drag &amp; drop files here or <span class="link">browse</span></p>
+        <p class="dropzone-hint">PDF, TXT, MD, MP3, WAV, OGG, FLAC, MP4, WEBM, AVI, MKV</p>
+      </div>
+    </div>
+
+    <div id="file-list" class="file-list" style="display: none;">
+      <h4>Selected Files</h4>
+      <ul id="file-list-items"></ul>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" id="upload-btn" disabled>
+      <span class="btn-text">Upload &amp; Ingest</span>
+      <span class="btn-loader" style="display: none;">
+        <span class="spinner"></span> Processing...
+      </span>
+    </button>
+  </form>
+
+  <div id="upload-result" class="result-box" style="display: none;"></div>
+</div>
+
+<%- include('partials/footer') %>
